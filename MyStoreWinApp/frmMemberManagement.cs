@@ -25,7 +25,8 @@ namespace MyStoreWinApp
 
         private void frmMemberManagement_Load(object sender, EventArgs e)
         {
-            btnDelete.Enabled = false;
+            ReloadPage();
+            list = memberRepository.GetMembers();
             dgvMemberList.CellDoubleClick += dgv_CellDoubleClick;
         }
 
@@ -36,7 +37,6 @@ namespace MyStoreWinApp
                 Text = "Update member",
                 CreateOrUpdate = true,
                 btnText = "Save",
-                isMember = false,
                 memberInfo = GetMemberInfo(),
                 MemberRepository = memberRepository
             };
@@ -71,6 +71,22 @@ namespace MyStoreWinApp
             txtCity.Text = string.Empty;
         }
 
+        private void ReloadPage()
+        {
+            btnDelete.Enabled = false;
+            btnSort.Enabled = false;
+            txtSearchID.Text = "";
+            txtSearchName.Text = "";
+            cboCountryFilter.Items.Clear();
+            cboCountryFilter.Items.Add("Choose a country");
+            cboCountryFilter.SelectedIndex = 0;
+            foreach(string country in memberRepository.GetCountryList())
+            {
+                cboCountryFilter.Items.Add(country);
+            }
+            cboCityFilter.Enabled = false;
+        }
+
         public void LoadMemberList()
         {
             var members = list;
@@ -101,9 +117,11 @@ namespace MyStoreWinApp
                 {
                     ClearText();
                     btnDelete.Enabled = false;
+                    btnSort.Enabled = false;
                 } else
                 {
                     btnDelete.Enabled = true;
+                    btnSort.Enabled = true;
                 }
             }
             catch (Exception ex)
@@ -116,7 +134,7 @@ namespace MyStoreWinApp
         {
             try
             {
-                txtSearchValue.Text = "";
+                ReloadPage();
                 var members = memberRepository.GetMembers();
                 list = members;
                 LoadMemberList();
@@ -133,7 +151,6 @@ namespace MyStoreWinApp
                 Text = "Create new member",
                 CreateOrUpdate = false,
                 MemberRepository = this.memberRepository,
-                isMember = true,
                 btnText = "Create"
             };
             if (details.ShowDialog() == DialogResult.OK)
@@ -159,15 +176,82 @@ namespace MyStoreWinApp
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            string SearchValue = txtSearchValue.Text;
-            list = memberRepository.SearchMember(SearchValue);
-            LoadMemberList();
+            try
+            {
+                string IDValue = txtSearchID.Text;
+                string NameValue = txtSearchName.Text;
+                if (!NameValue.Equals("") && !IDValue.Equals(""))
+                {
+                    int ID = int.Parse(IDValue);
+                    list = memberRepository.SearchMember(NameValue, ID);
+                    if (list.Count() == 0)
+                        throw new Exception("No match member found");
+                    else
+                        LoadMemberList();
+                } else
+                {
+                    throw new Exception("Missing information to search! Please, fill in both ID and Name");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Search member");
+            }
+            
         }
 
         private void btnSort_Click(object sender, EventArgs e)
         {
             list = memberRepository.SortMember();
             LoadMemberList();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e) => Close();
+
+        private void cboCountryFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string country = cboCountryFilter.Text;
+            if (!country.Equals("Choose a country"))
+            {
+                if (cboCityFilter.Enabled == false)
+                {
+                    cboCityFilter.Enabled = true;
+                }
+
+                cboCityFilter.Items.Clear();
+                cboCityFilter.Items.Add("Choose a city");
+                foreach (string city in memberRepository.GetCityByCountry(country))
+                {
+                    cboCityFilter.Items.Add(city);
+                }
+                cboCityFilter.SelectedIndex = 0;
+            } else
+            {
+                cboCityFilter.Enabled = false;
+            }
+        }
+
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string country = cboCountryFilter.Text;
+                string city = cboCityFilter.Text;
+                if (!country.Equals("Choose a country") && !city.Equals("Choose a city"))
+                {
+                    list = memberRepository.FilterMember(city, country);
+                    if (list.Count() == 0)
+                        throw new Exception("No match member found");
+                    else
+                        LoadMemberList();
+                } else
+                {
+                    throw new Exception("Missing information to filter! Please, fill in country and city");
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Filter member");
+            }
         }
     }
 }

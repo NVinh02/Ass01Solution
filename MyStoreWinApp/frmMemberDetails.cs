@@ -16,7 +16,6 @@ namespace MyStoreWinApp
     {
         public IMemberRepository MemberRepository { get; set; }
         public bool CreateOrUpdate { get; set; }
-        public bool isMember { get; set; }
         public string btnText { get; set; }
         public Member memberInfo { get; set; }
 
@@ -28,19 +27,33 @@ namespace MyStoreWinApp
         private void frmMemberDetails_Load(object sender, EventArgs e)
         {
             txtMemberID.Enabled = !CreateOrUpdate;
-            txtPassword.Enabled = isMember;
             btnConfirm.Text = btnText;
+            cboCountry.Items.Clear();
+            cboCity.Items.Clear();
             if (CreateOrUpdate == true)
             {
                 txtMemberID.Text = memberInfo.MemberID.ToString();
                 txtMemberName.Text = memberInfo.MemberName;
                 txtEmail.Text = memberInfo.Email;
-                if (isMember)
-                    txtPassword.Text = memberInfo.Password;
-                else
-                    txtPassword.Text = "********";
-                txtCountry.Text = memberInfo.Country;
-                txtCity.Text = memberInfo.City;
+                txtPassword.Text = memberInfo.Password;
+
+                foreach (var country in MemberRepository.GetCountryList())
+                    cboCountry.Items.Add(country);
+
+                foreach (var city in MemberRepository.GetCityByCountry(memberInfo.Country.Trim()))
+                    cboCity.Items.Add(city);
+
+                cboCountry.SelectedIndex = 0;
+                cboCity.SelectedIndex = 0;
+                cboCountry.Text = memberInfo.Country.Trim();
+                cboCity.Text = memberInfo.City.Trim();
+            } else
+            {
+                cboCountry.Items.Add("Select your country");
+                foreach (var country in MemberRepository.GetCountryList())
+                    cboCountry.Items.Add(country);
+                cboCity.Enabled = false;
+                cboCountry.SelectedIndex = 0;
             }
         }
 
@@ -48,28 +61,32 @@ namespace MyStoreWinApp
         {
             try
             {
-                string tmp;
-                if (isMember)
-                    tmp = txtPassword.Text;
-                else
-                    tmp = memberInfo.Password;
+                string city = cboCity.Text;
+                string country = cboCountry.Text;
 
-                var member = new Member
+                if (!city.Equals("Select your city") && !country.Equals("Select your country"))
                 {
-                    MemberID = int.Parse(txtMemberID.Text),
-                    MemberName = txtMemberName.Text,
-                    Email = txtEmail.Text,
-                    Password = tmp,
-                    City = txtCity.Text,
-                    Country = txtCountry.Text
-                };
+                    var member = new Member
+                    {
+                        MemberID = int.Parse(txtMemberID.Text),
+                        MemberName = txtMemberName.Text,
+                        Email = txtEmail.Text,
+                        Password = txtPassword.Text,
+                        City = city,
+                        Country = country
+                    };
 
-                if (CreateOrUpdate == true)
-                {
-                    MemberRepository.UpdateMember(member);
+                    if (CreateOrUpdate == true)
+                    {
+                        MemberRepository.UpdateMember(member);
+                    }
+                    else
+                    {
+                        MemberRepository.CreateNewMember(member);
+                    }
                 } else
                 {
-                    MemberRepository.CreateNewMember(member);
+                    throw new Exception("Please fill in all the information to finish");
                 }
             }
             catch (Exception ex)
@@ -79,5 +96,29 @@ namespace MyStoreWinApp
         }
 
         private void btnCancel_Click(object sender, EventArgs e) => Close();
+
+        private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string country = cboCountry.Text;
+            if (!country.Equals("Select your country"))
+            {
+                if (cboCity.Enabled == false)
+                {
+                    cboCity.Enabled = true;
+                }
+
+                cboCity.Items.Clear();
+                cboCity.Items.Add("Select your city");
+                foreach (string city in MemberRepository.GetCityByCountry(country))
+                {
+                    cboCity.Items.Add(city);
+                }
+                cboCity.SelectedIndex = 0;
+            }
+            else
+            {
+                cboCity.Enabled = false;
+            }
+        }
     }
 }

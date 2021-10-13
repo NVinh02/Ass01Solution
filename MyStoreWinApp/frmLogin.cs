@@ -54,7 +54,6 @@ namespace MyStoreWinApp
                     {
                         Text = "Profile",
                         CreateOrUpdate = true,
-                        isMember = true,
                         btnText = "Save change",
                         memberInfo = member,
                         MemberRepository = memberRepository
@@ -65,6 +64,7 @@ namespace MyStoreWinApp
                         this.Show();
                     }
                 }
+                txtPassword.Text = "";
             }
             else
             {

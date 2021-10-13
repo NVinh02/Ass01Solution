@@ -35,20 +35,20 @@ namespace MyStoreWinApp
             this.lbCity = new System.Windows.Forms.Label();
             this.lbMemberName = new System.Windows.Forms.Label();
             this.lbMemberID = new System.Windows.Forms.Label();
-            this.txtCountry = new System.Windows.Forms.TextBox();
-            this.txtCity = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtMemberName = new System.Windows.Forms.TextBox();
             this.txtMemberID = new System.Windows.Forms.TextBox();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.cboCountry = new System.Windows.Forms.ComboBox();
+            this.cboCity = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // lbCountry
             // 
             this.lbCountry.AutoSize = true;
-            this.lbCountry.Location = new System.Drawing.Point(25, 270);
+            this.lbCountry.Location = new System.Drawing.Point(25, 223);
             this.lbCountry.Name = "lbCountry";
             this.lbCountry.Size = new System.Drawing.Size(50, 15);
             this.lbCountry.TabIndex = 23;
@@ -75,7 +75,7 @@ namespace MyStoreWinApp
             // lbCity
             // 
             this.lbCity.AutoSize = true;
-            this.lbCity.Location = new System.Drawing.Point(25, 220);
+            this.lbCity.Location = new System.Drawing.Point(25, 276);
             this.lbCity.Name = "lbCity";
             this.lbCity.Size = new System.Drawing.Size(28, 15);
             this.lbCity.TabIndex = 20;
@@ -98,20 +98,6 @@ namespace MyStoreWinApp
             this.lbMemberID.Size = new System.Drawing.Size(63, 15);
             this.lbMemberID.TabIndex = 18;
             this.lbMemberID.Text = "MemberID";
-            // 
-            // txtCountry
-            // 
-            this.txtCountry.Location = new System.Drawing.Point(25, 288);
-            this.txtCountry.Name = "txtCountry";
-            this.txtCountry.Size = new System.Drawing.Size(200, 23);
-            this.txtCountry.TabIndex = 17;
-            // 
-            // txtCity
-            // 
-            this.txtCity.Location = new System.Drawing.Point(25, 238);
-            this.txtCity.Name = "txtCity";
-            this.txtCity.Size = new System.Drawing.Size(200, 23);
-            this.txtCity.TabIndex = 16;
             // 
             // txtPassword
             // 
@@ -162,11 +148,41 @@ namespace MyStoreWinApp
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // cboCountry
+            // 
+            this.cboCountry.FormattingEnabled = true;
+            this.cboCountry.Items.AddRange(new object[] {
+            "Brunei",
+            "Cambodia",
+            "Indonesia",
+            "Laos",
+            "Malaysia",
+            "Myanmar",
+            "Philippines",
+            "Singapore",
+            "Thailand",
+            "Vietnam"});
+            this.cboCountry.Location = new System.Drawing.Point(25, 241);
+            this.cboCountry.Name = "cboCountry";
+            this.cboCountry.Size = new System.Drawing.Size(200, 23);
+            this.cboCountry.TabIndex = 26;
+            this.cboCountry.SelectedIndexChanged += new System.EventHandler(this.cboCountry_SelectedIndexChanged);
+            // 
+            // cboCity
+            // 
+            this.cboCity.FormattingEnabled = true;
+            this.cboCity.Location = new System.Drawing.Point(25, 294);
+            this.cboCity.Name = "cboCity";
+            this.cboCity.Size = new System.Drawing.Size(200, 23);
+            this.cboCity.TabIndex = 27;
+            // 
             // frmMemberDetails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(260, 373);
+            this.Controls.Add(this.cboCity);
+            this.Controls.Add(this.cboCountry);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.lbCountry);
@@ -175,8 +191,6 @@ namespace MyStoreWinApp
             this.Controls.Add(this.lbCity);
             this.Controls.Add(this.lbMemberName);
             this.Controls.Add(this.lbMemberID);
-            this.Controls.Add(this.txtCountry);
-            this.Controls.Add(this.txtCity);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.txtMemberName);
@@ -198,13 +212,13 @@ namespace MyStoreWinApp
         private System.Windows.Forms.Label lbCity;
         private System.Windows.Forms.Label lbMemberName;
         private System.Windows.Forms.Label lbMemberID;
-        private System.Windows.Forms.TextBox txtCountry;
-        private System.Windows.Forms.TextBox txtCity;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.TextBox txtMemberName;
         private System.Windows.Forms.TextBox txtMemberID;
         private System.Windows.Forms.Button btnConfirm;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.ComboBox cboCountry;
+        private System.Windows.Forms.ComboBox cboCity;
     }
 }
