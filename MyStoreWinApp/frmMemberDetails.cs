@@ -61,32 +61,39 @@ namespace MyStoreWinApp
         {
             try
             {
+                string memberID = txtMemberID.Text.Trim();
+                string memberName = txtMemberName.Text.Trim();
+                string email = txtEmail.Text.Trim();
+                string password = txtPassword.Text.Trim();
                 string city = cboCity.Text;
                 string country = cboCountry.Text;
 
-                if (!city.Equals("Select your city") && !country.Equals("Select your country"))
-                {
-                    var member = new Member
-                    {
-                        MemberID = int.Parse(txtMemberID.Text),
-                        MemberName = txtMemberName.Text,
-                        Email = txtEmail.Text,
-                        Password = txtPassword.Text,
-                        City = city,
-                        Country = country
-                    };
-
-                    if (CreateOrUpdate == true)
-                    {
-                        MemberRepository.UpdateMember(member);
-                    }
-                    else
-                    {
-                        MemberRepository.CreateNewMember(member);
-                    }
-                } else
+                if (city.Equals("Select your city") || country.Equals("Select your country") || 
+                    (memberName.Equals("") || memberName.Equals(" ")) || 
+                    (memberID.Equals("") || memberID.Equals(" ")) ||
+                    (email.Equals("") || email.Equals(" ")) ||
+                    (password.Equals("") || password.Equals(" ")) )
                 {
                     throw new Exception("Please fill in all the information to finish");
+                }
+
+                var member = new Member
+                {
+                    MemberID = int.Parse(memberID),
+                    MemberName = memberName,
+                    Email = email,
+                    Password = password,
+                    City = city,
+                    Country = country
+                };
+
+                if (CreateOrUpdate == true)
+                {
+                    MemberRepository.UpdateMember(member);
+                }
+                else
+                {
+                    MemberRepository.CreateNewMember(member);
                 }
             }
             catch (Exception ex)
